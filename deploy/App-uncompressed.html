@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Random App Name51375</title>
+
+    <script type="text/javascript" src="/apps/2.0/sdk.js"></script>
+
+    <script type="text/javascript">
+        Rally.onReady(function () {
+                Ext.define('CustomApp', {
+    extend: 'Rally.app.App',
+    componentCls: 'app',
+    launch: function() {
+        var context = this.getContext();
+
+        //Display the current workspace name
+        this._displayContextValue('Workspace: ' + context.getWorkspace().Name);
+
+        //Display the current project name
+        this._displayContextValue('Project: ' + context.getProject().Name);
+
+        //Is there a timebox scope specified (iteration or release)?
+        var timeboxScope = context.getTimeboxScope(),
+            type = timeboxScope && timeboxScope.getType(),
+            record = timeboxScope && timeboxScope.getRecord();
+        if(timeboxScope) {
+            this._displayContextValue('Timebox scope: ' + type + ', value: ' + 
+                    (record ? record.get('Name') : 'Unscheduled'));
+        } else {
+            this._displayContextValue('No timebox scope');
+        }
+    }, 
+    _displayContextValue: function(value) {
+        this.add({
+            xtype: 'component',
+            html: value
+        });
+    }
+});
+
+
+            Rally.launchApp('CustomApp', {
+                name:"Random App Name51375",
+	            parentRepos:""
+            });
+
+        });
+    </script>
+
+
+
+    <style type="text/css">
+        .app {
+  /* Add app styles here */
+}
+
+    </style>
+</head>
+<body>
+</body>
+</html>
