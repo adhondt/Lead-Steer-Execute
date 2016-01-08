@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Random App Name51375</title>
+    <title>LEAD-STEER-EXECUTE Metrics</title>
 
     <script type="text/javascript" src="https://rally1.rallydev.com/apps/2.0/sdk.js"></script>
 
     <script type="text/javascript">
         Rally.onReady(function () {
-                Ext.define("CustomApp",{extend:"Rally.app.App",componentCls:"app",launch:function(){var context=this.getContext();this._displayContextValue("Workspace: "+context.getWorkspace().Name),this._displayContextValue("Project: "+context.getProject().Name);var timeboxScope=context.getTimeboxScope(),type=timeboxScope&&timeboxScope.getType(),record=timeboxScope&&timeboxScope.getRecord();timeboxScope?this._displayContextValue("Timebox scope: "+type+", value: "+(record?record.get("Name"):"Unscheduled")):this._displayContextValue("No timebox scope")},_displayContextValue:function(value){this.add({xtype:"component",html:value})}});
+                Ext.define("CustomApp",{extend:"Rally.app.App",componentCls:"app",launch:function(){var context=this.getContext();this._displayContextValue("Workspace: "+context.getWorkspace().Name),this._displayContextValue("Project: "+context.getProject().Name);var timeboxScope=context.getTimeboxScope(),type=timeboxScope&&timeboxScope.getType(),record=timeboxScope&&timeboxScope.getRecord();timeboxScope?this._displayContextValue("Timebox scope: "+type+", value: "+(record?record.get("Name"):"Unscheduled")):this._displayContextValue("No timebox scope"),this.add({xtype:"rallygrid",itemId:"storyGrid",columnCfgs:["FormattedID","Name","Project"],context:this.getContext(),storeConfig:{model:"userstory",filters:[{property:"LastUpdateDate",operator:">",value:"yesterday"}],context:{project:this.getContext().getProject(),projectScopeDown:!0}}})},_displayContextValue:function(value){this.add({xtype:"component",html:value})}});
 
             Rally.launchApp('CustomApp', {
-                name:"Random App Name51375",
+                name:"LEAD-STEER-EXECUTE Metrics",
 	            parentRepos:""
             });
 

@@ -15,6 +15,33 @@ Ext.define('CustomApp', {
         } else {
             this._displayContextValue('No timebox scope');
         }
+        
+        this.add({
+            xtype: 'rallygrid',
+            itemId: 'storyGrid',
+            columnCfgs: [
+                'FormattedID',
+                'Name',
+                'Project'
+            ],
+            context: this.getContext(),
+            storeConfig: {
+                model: 'userstory',
+                filters: [
+                    {
+                        property: 'LastUpdateDate',
+                        operator: '>',
+                        value: 'yesterday'
+                    }      
+                ],
+                context:{
+                    project: this.getContext().getProject(),
+                    projectScopeDown: true  //true is default and can be omitted
+                }
+            }
+        }
+            );
+        
     }, 
     _displayContextValue: function(value) {
         this.add({

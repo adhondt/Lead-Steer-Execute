@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Random App Name51375</title>
+    <title>LEAD-STEER-EXECUTE Metrics</title>
 
     <script type="text/javascript" src="/apps/2.0/sdk.js"></script>
 
@@ -13,13 +13,8 @@
     launch: function() {
         var context = this.getContext();
 
-        //Display the current workspace name
         this._displayContextValue('Workspace: ' + context.getWorkspace().Name);
-
-        //Display the current project name
         this._displayContextValue('Project: ' + context.getProject().Name);
-
-        //Is there a timebox scope specified (iteration or release)?
         var timeboxScope = context.getTimeboxScope(),
             type = timeboxScope && timeboxScope.getType(),
             record = timeboxScope && timeboxScope.getRecord();
@@ -29,6 +24,33 @@
         } else {
             this._displayContextValue('No timebox scope');
         }
+        
+        this.add({
+            xtype: 'rallygrid',
+            itemId: 'storyGrid',
+            columnCfgs: [
+                'FormattedID',
+                'Name',
+                'Project'
+            ],
+            context: this.getContext(),
+            storeConfig: {
+                model: 'userstory',
+                filters: [
+                    {
+                        property: 'LastUpdateDate',
+                        operator: '>',
+                        value: 'yesterday'
+                    }      
+                ],
+                context:{
+                    project: this.getContext().getProject(),
+                    projectScopeDown: true  //true is default and can be omitted
+                }
+            }
+        }
+            );
+        
     }, 
     _displayContextValue: function(value) {
         this.add({
@@ -40,7 +62,7 @@
 
 
             Rally.launchApp('CustomApp', {
-                name:"Random App Name51375",
+                name:"LEAD-STEER-EXECUTE Metrics",
 	            parentRepos:""
             });
 
