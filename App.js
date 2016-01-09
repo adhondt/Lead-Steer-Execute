@@ -6,9 +6,11 @@ Ext.define('CustomApp', {
 
         this._displayContextValue(this, 'Workspace: ' + context.getWorkspace().Name);
         this._displayContextValue(this, 'Project: ' + context.getProject().Name);
+        this._displayContextValue(this, 'Global Project: ' + context.getGlobalContext().getProject().Name);
         this._dumpTimeContext(this, context);
         this._addStoryGrid(this, context);
-        
+        this._addInitiativeGrid(this, 'I46');
+
     }, 
     _displayContextValue: function(container, value) {
         container.add({
@@ -52,6 +54,32 @@ Ext.define('CustomApp', {
                 }
             }
         }
+        );
+    },
+    _addInitiativeGrid: function(container, initiative) {
+        container.add({
+            xtype: 'rallygrid',
+            itemId: 'initiativeGrid',
+            columnCfgs: [
+                'FormattedID',
+                'Name',
+                'Project'
+                ],
+            storeConfig: {
+                model: 'PortfolioItem/Initiative',
+                autoload: true,
+                context: {
+                    project: '/project/37192747640', //topmost Radian project
+                    projectScopeDown: true,
+                    projectScopeUp: false
+                    },
+                filters: {
+                    property: 'FormattedID',
+                    operator: '=',
+                    value: initiative
+                    }
+                }
+            }
         );
     }
 });
