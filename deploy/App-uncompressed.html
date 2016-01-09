@@ -13,32 +13,31 @@
     launch: function() {
         var context = this.getContext();
 
-        this._displayContextValue('Workspace: ' + context.getWorkspace().Name);
-        this._displayContextValue('Project: ' + context.getProject().Name);
-        this._dumpTimeContext();
-        this._addStoryGrid();
+        this._displayContextValue(this, 'Workspace: ' + context.getWorkspace().Name);
+        this._displayContextValue(this, 'Project: ' + context.getProject().Name);
+        this._dumpTimeContext(this, context);
+        this._addStoryGrid(this, context);
         
     }, 
-    _displayContextValue: function(value) {
-        this.add({
+    _displayContextValue: function(container, value) {
+        container.add({
             xtype: 'component',
             html: value
         });
     },
-    _dumpTimeContext: function() {
-        var context = this.getContext();
+    _dumpTimeContext: function(container, context) {
         var timeboxScope = context.getTimeboxScope(),
             type = timeboxScope && timeboxScope.getType(),
             record = timeboxScope && timeboxScope.getRecord();
         if(timeboxScope) {
-            this._displayContextValue('Timebox scope: ' + type + ', value: ' + 
+            this._displayContextValue(container, 'Timebox scope: ' + type + ', value: ' + 
                     (record ? record.get('Name') : 'Unscheduled'));
         } else {
             this._displayContextValue('No timebox scope');
         }
     },
-    _addStoryGrid: function() {
-        this.add({
+    _addStoryGrid: function(container, context) {
+        container.add({
             xtype: 'rallygrid',
             itemId: 'storyGrid',
             columnCfgs: [
@@ -46,7 +45,7 @@
                 'Name',
                 'Project'
             ],
-            context: this.getContext(),
+            context: context,
             storeConfig: {
                 model: 'userstory',
                 filters: [
@@ -57,7 +56,7 @@
                     }      
                 ],
                 context:{
-                    project: this.getContext().getProject(),
+                    project: context.getProject(),
                     projectScopeDown: true  //true is default and can be omitted
                 }
             }
