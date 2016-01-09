@@ -9,8 +9,8 @@ Ext.define('CustomApp', {
         this._displayContextValue(this, 'Global Project: ' + context.getGlobalContext().getProject().Name);
         this._dumpTimeContext(this, context);
         this._addStoryGrid(this, context);
-        this._addInitiativeGrid(this, 'I46');
-        this._addInitiativeGrid(this, 'I67');
+        this._addInitiativeGrid(this, 'I46',false);
+        this._addInitiativeGrid(this, 'I67',true);
     }, 
     _displayContextValue: function(container, value) {
         container.add({
@@ -56,11 +56,12 @@ Ext.define('CustomApp', {
         }
         );
     },
-    _addInitiativeGrid: function(container, initiative) {
+    _addInitiativeGrid: function(container, initiative, hideHeaders) {
         container.add({
             xtype: 'rallygrid',
             itemId: 'initiativeGrid'+initiative,
             showPagingToolbar: false,
+            hideHeaders: hideHeaders,
             columnCfgs: [
                 'FormattedID',
                 'Name',
