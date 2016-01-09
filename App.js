@@ -10,7 +10,7 @@ Ext.define('CustomApp', {
         this._dumpTimeContext(this, context);
         this._addStoryGrid(this, context);
         this._addInitiativeGrid(this, 'I46');
-
+        this._addInitiativeGrid(this, 'I67');
     }, 
     _displayContextValue: function(container, value) {
         container.add({
@@ -59,11 +59,17 @@ Ext.define('CustomApp', {
     _addInitiativeGrid: function(container, initiative) {
         container.add({
             xtype: 'rallygrid',
-            itemId: 'initiativeGrid',
+            itemId: 'initiativeGrid'+initiative,
+            showPagingToolbar: false,
             columnCfgs: [
                 'FormattedID',
                 'Name',
-                'Project'
+                'PercentDoneByPlanEstimate',
+                'PercentDoneByStoryCount',
+                'PlannedEndDate',
+                'PreliminaryEstimate',
+                'RefinedEstimate',
+                'UnEstimatedLeafStoryCount'
                 ],
             storeConfig: {
                 model: 'PortfolioItem/Initiative',
@@ -73,7 +79,7 @@ Ext.define('CustomApp', {
                     projectScopeDown: true,
                     projectScopeUp: false
                     },
-                filters: {
+                filters: {            
                     property: 'FormattedID',
                     operator: '=',
                     value: initiative
