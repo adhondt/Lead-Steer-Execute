@@ -6,6 +6,18 @@ Ext.define('CustomApp', {
 
         this._displayContextValue('Workspace: ' + context.getWorkspace().Name);
         this._displayContextValue('Project: ' + context.getProject().Name);
+        this._dumpTimeContext();
+        this._addStoryGrid();
+        
+    }, 
+    _displayContextValue: function(value) {
+        this.add({
+            xtype: 'component',
+            html: value
+        });
+    },
+    _dumpTimeContext: function() {
+        var context = this.getContext();
         var timeboxScope = context.getTimeboxScope(),
             type = timeboxScope && timeboxScope.getType(),
             record = timeboxScope && timeboxScope.getRecord();
@@ -15,7 +27,8 @@ Ext.define('CustomApp', {
         } else {
             this._displayContextValue('No timebox scope');
         }
-        
+    },
+    _addStoryGrid: function() {
         this.add({
             xtype: 'rallygrid',
             itemId: 'storyGrid',
@@ -30,8 +43,8 @@ Ext.define('CustomApp', {
                 filters: [
                     {
                         property: 'LastUpdateDate',
-                        operator: '>',
-                        value: 'yesterday'
+                        operator: '>=',
+                        value: 'today-7'
                     }      
                 ],
                 context:{
@@ -40,13 +53,6 @@ Ext.define('CustomApp', {
                 }
             }
         }
-            );
-        
-    }, 
-    _displayContextValue: function(value) {
-        this.add({
-            xtype: 'component',
-            html: value
-        });
+        );
     }
 });
