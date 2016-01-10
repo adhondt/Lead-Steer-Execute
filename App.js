@@ -64,16 +64,10 @@ Ext.define('CustomApp', {
     },
     _filterByFeatureState: function(value) {
         return {            
-                    property: 'FormattedID',
+                    property: 'State.Name',
                     operator: '=',
                     value: value
                     };
-/*        return {            
-                    property: 'State',
-                    operator: '=',
-                    value: value
-                    };
-                    */
     },
     _addFeatureGrid: function(container, ID, filters, hideHeaders) {
         this._addPortfolioGrid(container,ID,filters,hideHeaders,
