@@ -6,8 +6,8 @@ Ext.define('CustomApp', {
 
         this._addLine(this, 'Extract of ' + context.getWorkspace().Name + ' at ' + new Date().toLocaleString());
         this._dumpTimeContext(this, context);
-        this._addInitiativeGrid(this, 'I46', this._filterByInitiative('I46'), false);
-        this._addFeatureGrid(this, 'ReadyFeatures', this._filterByFeatureState('F737'), false);
+        this._addInitiativeGrid(this, 'I46', this._filterByID('I46'), false);
+        this._addFeatureGrid(this, 'ReadyFeatures', this._filterByState('Defined'), false);
         this._addLine(this, 'done');
 
     }, 
@@ -55,19 +55,20 @@ Ext.define('CustomApp', {
         }
         );
     },
-    _filterByInitiative: function(initiative) {
+    _filterByID: function(initiative) {
         return {            
                     property: 'FormattedID',
                     operator: '=',
                     value: initiative
                     };
     },
-    _filterByFeatureState: function(value) {
-        return {            
-                    property: 'State.Name',
-                    operator: '=',
-                    value: value
-                    };
+    _filterByState: function(value) {
+        var filters = Ext.create('Rally.data.QueryFilter', {
+            property: 'State.Name',
+            operator: '=',
+            value: value
+            });
+        return filters;
     },
     _addFeatureGrid: function(container, ID, filters, hideHeaders) {
         this._addPortfolioGrid(container,ID,filters,hideHeaders,
@@ -77,8 +78,10 @@ Ext.define('CustomApp', {
         'State',
         'c_BusinessPreWorkState',
         'c_FeatureQACoordinator',
-        'c_UATState'
-        ],"Feature");
+        'c_UATState',
+        'Project'
+        ],"Feature",
+        true);
     },
     _addInitiativeGrid: function(container, ID, filters, hideHeaders) {
         this._addPortfolioGrid(container,ID,filters,hideHeaders,
@@ -94,13 +97,14 @@ Ext.define('CustomApp', {
         'RefinedEstimate',
         'UnEstimatedLeafStoryCount'
         ],
-        "Initiative");
+        "Initiative",
+        false);
     },
-    _addPortfolioGrid: function(container, ID, filters, hideHeaders, columns, model) {
+    _addPortfolioGrid: function(container, ID, filters, hideHeaders, columns, model, paging) {
         container.add({
             xtype: 'rallygrid',
             itemId: 'portfolioGrid'+ID,
-            showPagingToolbar: false,
+            showPagingToolbar: paging,
             hideHeaders: hideHeaders,
             viewConfig: {shrinkWrap: 3},
             columnCfgs: columns,
