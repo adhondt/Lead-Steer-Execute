@@ -13,11 +13,19 @@ Ext.define('CustomApp', {
         var PROJECT_SFDC_TEAMS = '35625125755';
         var context = this.getContext();
 
+//        this._addFeatureGrid(this, 'ReadyFeatures', this._filterByState('Defined'), PROJECT_BUSINESS, false);
         this._addLine(this, 'Extract of ' + context.getWorkspace().Name + ' at ' + new Date().toLocaleString());
         this._dumpTimeContext(this, context);
         this._addInitiativeGrid(this, 'I46', this._filterByID('I46'), PROJECT_RADIAN, false);
-        this._addFeatureGrid(this, 'ReadyFeatures', this._filterByState('Defined'), PROJECT_BUSINESS, false);
+        this._addInitiativeGrid(this, 'I44', this._filterByID('I44'), PROJECT_RADIAN, true);
+        this._addThemeGrid(this, 'T373', this._filterByID('T373'), PROJECT_RADIAN, false);
         this._addCount(this,'PortfolioItem/Feature',this._filterByState('Defined'), PROJECT_BUSINESS, 'Business defined features:');
+        this._addCount(this,'UserStory',this._filterEstimatedStoriesByRelease('PI.07'), PROJECT_SUPPORTING_TEAMS, 'Estimated Stories--Supporting Teams:');
+        this._addCount(this,'UserStory',this._filterEstimatedStoriesByRelease('PI.07'), PROJECT_SPRINT_TEAMS, 'Estimated Stories--Sprint Teams:');
+        this._addCount(this,'UserStory',this._filterEstimatedStoriesByRelease('PI.07'), PROJECT_AWS_TEAMS, 'Estimated Stories--AWS Teams:');
+        this._addCount(this,'UserStory',this._filterEstimatedStoriesByRelease('PI.07'), PROJECT_ECMLDR_TEAMS, 'Estimated Stories--ECMLDR Teams:');
+        this._addCount(this,'UserStory',this._filterEstimatedStoriesByRelease('PI.07'), PROJECT_PAS_TEAMS, 'Estimated Stories--PAS Teams:');
+        this._addCount(this,'UserStory',this._filterEstimatedStoriesByRelease('PI.07'), PROJECT_SFDC_TEAMS, 'Estimated Stories--SFDC Teams:');
 
     }, 
     _addLine: function(container, value) {
@@ -79,6 +87,19 @@ Ext.define('CustomApp', {
             });
         return filters;
     },
+    _filterEstimatedStoriesByRelease: function(value) {
+        var filters = Ext.create('Rally.data.QueryFilter', {
+            property: 'Release.Name',
+            operator: '=',
+            value: value
+            });
+        filters = filters.and(Ext.create('Rally.data.QueryFilter', {
+            property: 'PlanEstimate',
+            operator: '>',
+            value: '0'
+            }));
+        return filters;
+    },
     _addCount: function(container, model, filters, project, message){
         Ext.create('Rally.data.wsapi.Store', {
             model: model,
@@ -108,6 +129,23 @@ Ext.define('CustomApp', {
         'c_UATState',
         'Project'
         ],"Feature",
+        true);
+    },
+    _addThemeGrid: function(container, ID, filters, project, hideHeaders) {
+        this._addPortfolioGrid(container,ID,filters, project, hideHeaders,
+        [
+        'FormattedID',
+        'Name',
+        'PercentDoneByStoryPlanEstimate',
+        'PercentDoneByStoryCount',
+        'AcceptedLeafStoryCount',
+        'LeafStoryCount',
+        'State',
+        'c_BusinessPreWorkState',
+        'c_FeatureQACoordinator',
+        'c_UATState',
+        'Project'
+        ],"Theme",
         true);
     },
     _addInitiativeGrid: function(container, ID, filters, project, hideHeaders) {
