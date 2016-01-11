@@ -11,23 +11,22 @@
     extend: 'Rally.app.App',
     componentCls: 'app',
     launch: function() {
-    var PROJECT_RADIAN = '37192747640';
-    var PROJECT_BUSINESS = '37637012809';
-    var PROJECT_SPRINT_TEAMS = '37213611687';
-    var PROJECT_SUPPORTING_TEAMS = '37192947515';
-    var PROJECT_EXECUTION = '37192748545';
-    var PROJECT_AWS_TEAMS = '35625370074';
-    var PROJECT_ECMLDR_TEAMS = '35625373948';
-    var PROJECT_PAS_TEAMS = '34799452294';
-    var PROJECT_SFDC_TEAMS = '35625125755';
+        var PROJECT_RADIAN = '37192747640';
+        var PROJECT_BUSINESS = '37637012809';
+        var PROJECT_SPRINT_TEAMS = '37213611687';
+        var PROJECT_SUPPORTING_TEAMS = '37192947515';
+        var PROJECT_EXECUTION = '37192748545';
+        var PROJECT_AWS_TEAMS = '35625370074';
+        var PROJECT_ECMLDR_TEAMS = '35625373948';
+        var PROJECT_PAS_TEAMS = '34799452294';
+        var PROJECT_SFDC_TEAMS = '35625125755';
         var context = this.getContext();
 
         this._addLine(this, 'Extract of ' + context.getWorkspace().Name + ' at ' + new Date().toLocaleString());
         this._dumpTimeContext(this, context);
-//        this._addInitiativeGrid(this, 'I46', this._filterByID('I46'), false);
-//        this._addFeatureGrid(this, 'ReadyFeatures', this._filterByState('Defined'), false);
-        this._countFeatures(this,this._filterByState('Defined'), PROJECT_BUSINESS);
-        this._addLine(this, 'done');
+        this._addInitiativeGrid(this, 'I46', this._filterByID('I46'), PROJECT_RADIAN, false);
+        this._addFeatureGrid(this, 'ReadyFeatures', this._filterByState('Defined'), PROJECT_BUSINESS, false);
+        this._addCount(this,'PortfolioItem/Feature',this._filterByState('Defined'), PROJECT_BUSINESS, 'Business defined features:');
 
     }, 
     _addLine: function(container, value) {
@@ -89,9 +88,9 @@
             });
         return filters;
     },
-    _countFeatures: function(container, filters, project){
+    _addCount: function(container, model, filters, project, message){
         Ext.create('Rally.data.wsapi.Store', {
-            model: "PortfolioItem/Feature",
+            model: model,
             pagesize: 1,
             autoLoad: true,
             context: {
@@ -102,13 +101,13 @@
             filters: filters,
             listeners: {
                 load: function(store, records) {
-                    container._addLine(container, "Business Defined features: " + store.getTotalCount());
+                    container._addLine(container, message + ' ' + store.getTotalCount());
                 }
             }
         });
         },
-    _addFeatureGrid: function(container, ID, filters, hideHeaders) {
-        this._addPortfolioGrid(container,ID,filters,hideHeaders,
+    _addFeatureGrid: function(container, ID, filters, project, hideHeaders) {
+        this._addPortfolioGrid(container,ID,filters, project, hideHeaders,
         [
         'FormattedID',
         'Name',
@@ -120,8 +119,8 @@
         ],"Feature",
         true);
     },
-    _addInitiativeGrid: function(container, ID, filters, hideHeaders) {
-        this._addPortfolioGrid(container,ID,filters,hideHeaders,
+    _addInitiativeGrid: function(container, ID, filters, project, hideHeaders) {
+        this._addPortfolioGrid(container,ID,filters, project, hideHeaders,
         [
         'FormattedID',
         'Name',
@@ -137,7 +136,7 @@
         "Initiative",
         false);
     },
-    _addPortfolioGrid: function(container, ID, filters, hideHeaders, columns, model, paging) {
+    _addPortfolioGrid: function(container, ID, filters, project, hideHeaders, columns, model, paging) {
         container.add({
             xtype: 'rallygrid',
             itemId: 'portfolioGrid'+ID,
@@ -149,7 +148,7 @@
                 model: 'PortfolioItem/' + model,
                 autoload: true,
                 context: {
-                    project: '/project/37637012809',
+                    project: '/project/'+project,
                     projectScopeDown: true,
                     projectScopeUp: false
                     },
