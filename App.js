@@ -1,3 +1,4 @@
+/*global Ext*/
 Ext.define('CustomApp', {
     extend: 'Rally.app.App',
     componentCls: 'app',
@@ -14,8 +15,9 @@ Ext.define('CustomApp', {
         var context = this.getContext();
 
 //        this._addFeatureGrid(this, 'ReadyFeatures', this._filterByState('Defined'), PROJECT_BUSINESS, false);
+
 /*
-        this._addLine(this, 'Extract of ' + context.getWorkspace().Name + ' at ' + new Date().toLocaleString());
+this._addLine(this, 'Extract of ' + context.getWorkspace().Name + ' at ' + new Date().toLocaleString());
         this._dumpTimeContext(this, context);
         this._addInitiativeGrid(this, 'I46', this._filterByID('I46'), PROJECT_RADIAN, false);
         this._addInitiativeGrid(this, 'I44', this._filterByID('I44'), PROJECT_RADIAN, true);
@@ -29,7 +31,7 @@ Ext.define('CustomApp', {
         this._addCount(this,'UserStory',this._filterEstimatedStoriesByRelease('PI.07'), PROJECT_PAS_TEAMS, 'Estimated Stories--PAS Teams:');
         this._addCount(this,'UserStory',this._filterEstimatedStoriesByRelease('PI.07'), PROJECT_SFDC_TEAMS, 'Estimated Stories--SFDC Teams:');
 */
-        this._addAvg(this,"Iteration",this._filterLastSixWeeksOfIterations(),PROJECT_ECMLDR_TEAMS,"Iteration Planned Velocity","PlannedVelocity");
+        this._addAvg(this,"Iteration",this._filterLastSixWeeksOfIterations(),PROJECT_ECMLDR_TEAMS,"Average Velocity","PlannedVelocity");
 
     }, 
     _addLine: function(container, value) {
@@ -128,17 +130,16 @@ Ext.define('CustomApp', {
                 'PlannedVelocity',
                 'PlanEstimate'
             ],
-            context: {
-                project: '/project/' + project,
-                projectScopeDown: true,
-                projectScopeUp: false
-                },
+            context: {project: '/project/' + project},
             filters: filters,
             listeners: {
                 load: function(store, records) {
                     var total=0;
+                    container._addLine(container, store.getTotalCount() + ' ' + model + ' rows in ' + filters);
+                    container._addLine(container, "first field:" + records[0].get('Name'));
                     Ext.Array.each(records, function(row) {
-                        total+=row[field];
+                            total += row.PlanEstimate || 0;
+                            container._addLine(container, "found row " + row.get('Name') + ' ' + row.get('Project') + ' ' + row.get('PlannedVelocity') + ' ' + row.get('PlanEstimate'));
                     });
                     container._addLine(container, message + ' ' + total);
                 }
@@ -230,5 +231,8 @@ Ext.define('CustomApp', {
                 }
             }
         );
+    },
+    _isNumeric: function(n){
+        return !isNaN(parseFloat(n)) && isFinite(n);
     }
 });
